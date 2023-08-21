@@ -33,7 +33,7 @@ private:
   void add(const std::string& target, const std::string& source);
   void sub(const std::string& target, const std::string& source);
   void mul(const std::string& target, const std::string& source);
-
+  void div(const std::string& target, const std::string& source);
 public:
   CpuSimulator (const std::string& file);
   CpuSimulator (const CpuSimulator&& cpu) = delete;
