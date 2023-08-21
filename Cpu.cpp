@@ -31,15 +31,24 @@ void CpuSimulator::parser (const std::string& input) {
   else if(operation == "ADD") {
     std::string target;
     std::string source;
-    iss >> target;
-    iss >> source;
+    iss >> std::ws >> target;
+    iss >> std::ws >>source;
+    add(target, source);
   }
 
   else if(operation == "SUB") {
     std::string target;
     std::string source;
-    iss >> target;
-    iss >> source;
+    iss >> std::ws >> target;
+    iss >> std::ws >> source;
+    sub(target, source);
+  }
+
+  else if(operation == "MUL") {
+    std::string target, source;
+    iss >> std::ws >> target;
+    iss >> std::ws >> source;
+    mul(target, source);
   }
 }
 
@@ -288,11 +297,11 @@ void CpuSimulator::mul(const std::string& t, const std::string& s) {
         }
       }
       // if our source is digit 
-      if(isNum) {
+      if(isNum ) {
         memory[index] *= std::stoi(source);
         return;
       }
-      // try to find register and add value in source register
+      // try to find register and multiply value in source register
       try {
         auto targetIter = registers.find(source);
         if(targetIter != registers.end()) {
@@ -320,11 +329,11 @@ void CpuSimulator::mul(const std::string& t, const std::string& s) {
               registers[target] *= std::stoi(source);
               return;
             }
-            //else if our source is memeory address add to our register value of memory
+            //else if our source is memeory address multiply to our register value of memory
             else  if(source[0] == '[' && source[source.size() - 1] == ']'){
               int index = std::stoi(source.substr(1, (source.size() - 2)));
               registers[target] *= memory[index];
-              // if our source is 
+              // if our source is register 
             } else {
                   std::transform(source.begin(), source.end(), source.begin(), ::toupper);
                   registers[target] *= registers[source];
@@ -333,6 +342,84 @@ void CpuSimulator::mul(const std::string& t, const std::string& s) {
         } catch (std::invalid_argument& e) {
             std::cerr << "Invalid argument exception (source): " << e.what() << std::endl;
           }
+      } 
+  } catch (std::invalid_argument& e) {
+        std::cerr << "Invalid argument exception (source): " << e.what() << std::endl;
+    }
+}
+
+void CpuSimulator::div(const std::string& t, const std::string& s) {
+  try {
+    std::string target = t;
+    std::string source = s;
+ 
+    // if our target is memory address
+    if(target[0] == '[' && target[target.size() - 1] == ']') {
+      int index = std::stoi(target.substr(1, (target.size() - 2)));
+      bool isNum {true};
+      // find is our source is digit or not
+      for(auto it = source.begin(); it != source.end(); ++it){
+        if(!std::isdigit(*it)) {
+          isNum = false;
+        }
+      }
+      // if our source is digit and is not equal 0;
+      if(isNum && isNum != 0) {
+        memory[index] /= std::stoi(source);
+        return;
+      }
+      // try to find register and add value in source register
+      try {
+        auto targetIter = registers.find(source);
+        if(targetIter != registers.end() && registers[source] != 0) {
+          memory[index] /= registers[source]; 
+        }
+      } catch (std::invalid_argument& e) {
+          std::cerr << "Invalid argument exception (source): " << e.what() << std::endl;
+      }
+      // if our target is register
+    } else {
+      std::transform(target.begin(), target.end(), target.begin(), ::toupper);
+        try {
+          auto targetIter = registers.find(target);
+          if(targetIter != registers.end()) {
+            std::string source;
+            bool isNum {true};
+            // see is our source is literal number
+            for(auto it = source.begin(); it != source.end(); ++it){
+              if(!std::isdigit(*it)) {
+                isNum = false;
+              }
+            }
+            // if our source is literal add to our register
+            if(isNum && isNum != 0) {
+              registers[target] /= std::stoi(source);
+              return;
+            }
+            //else if our source is memeory address multiply to our register value of memory
+            else  if(source[0] == '[' && source[source.size() - 1] == ']'){
+              int index = std::stoi(source.substr(1, (source.size() - 2)));
+              if(memory[index] == 0) {
+                throw std::runtime_error ("Division by zero");
+              }
+                registers[target] = memory[index];
+              // if our source is register 
+            } else {
+              
+              if(registers[source] == 0) {
+                throw std::runtime_error ("Division by zero");
+              }
+                  std::transform(source.begin(), source.end(), source.begin(), ::toupper);
+                  registers[target] /= registers[source];
+              }
+          }
+        } catch (const std::invalid_argument& e) {
+            std::cerr << "Invalid argument exception (source): " << e.what() << std::endl;
+          }
+          catch(const std::runtime_error& e) {
+            std::cerr << "Runtime error: " << e.what() << std:: endl;
+          }
+
       } 
   } catch (std::invalid_argument& e) {
         std::cerr << "Invalid argument exception (source): " << e.what() << std::endl;
