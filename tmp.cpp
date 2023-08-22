@@ -1,9 +1,49 @@
-#include "Cpu.h"
 #include <iostream> 
 #include <array>
 #include <map>
 #include <fstream>
 #include <bits/stdc++.h>
+
+enum class Operations {
+  MOV,
+  ADD,
+  SUB,
+  MUL,
+  DIV,
+  AND,
+  OR,
+  NOT,
+  CMP,
+  JMP,
+  JG, 
+  JL,
+  JE
+};
+
+class CpuSimulator {
+private:
+  const int memSize = 32;
+  std::string filePath {};
+  std::array<int, 32> memory;
+  std::map<std::string, int> registers;
+
+  void parser(const std::string& op);
+  void mov(const std::string& target, const std::string& source);
+  void add(const std::string& target, const std::string& source);
+  void sub(const std::string& target, const std::string& source);
+  void mul(const std::string& target, const std::string& source);
+  void div(const std::string& target, const std::string& source);
+  void isInMemory(int num);
+  bool isNumeric(const std::string& num);
+
+public:
+  CpuSimulator (const std::string& file);
+  CpuSimulator (const CpuSimulator&& cpu) = delete;
+  CpuSimulator (const CpuSimulator& cpu) = delete;
+  void operator=(const CpuSimulator& cpu) = delete;
+  void run();
+  void dumpMemor();
+};
 
 CpuSimulator::CpuSimulator(const std::string& file) : filePath(file),  memory {0} {
   registers ["AYB"] = 0;
@@ -119,8 +159,8 @@ void CpuSimulator::mov(const std::string& t, const std::string& s) {
       // try to find register and multiply memory with source registers value
       try {
         std::transform(source.begin(), source.end(), source.begin(), ::toupper);
-        auto sourceIter = registers.find(source);
-        if(sourceIter != registers.end()) {
+        auto targetIter = registers.find(source);
+        if(targetIter != registers.end()) {
           memory[index] = registers[source]; 
         }
       } catch (std::invalid_argument& e) {
@@ -190,8 +230,8 @@ void CpuSimulator::add(const std::string& t, const std::string& s) {
       // try to find register and multiply memory with source registers value
       try {
         std::transform(source.begin(), source.end(), source.begin(), ::toupper);
-        auto sourceIter = registers.find(source);
-        if(sourceIter != registers.end()) {
+        auto targetIter = registers.find(source);
+        if(targetIter != registers.end()) {
           memory[index] += registers[source]; 
         }
       } catch (std::invalid_argument& e) {
@@ -477,4 +517,13 @@ void CpuSimulator::dumpMemor() {
   for(auto regs : registers) {
     std::cout << "Resgister " << regs.first << " value " << regs.second << std::endl;
   }
+}
+
+int main() {
+  
+  CpuSimulator cpu1("asem.txt");
+  cpu1.run();
+  cpu1.dumpMemor();
+
+return 0;
 }

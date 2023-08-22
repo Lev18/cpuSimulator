@@ -1,1 +1,7 @@
 MOV [15] 24
+MOV AYB 12
+MOv ben 45
+mov GIM 4
+div [15] 2
+div ayb 2
+mov [17] ben

@@ -5,7 +5,7 @@
 #include <map>
 #include <string>
 
-enum class Regs {
+enum class Operations {
   MOV,
   ADD,
   SUB,
@@ -34,6 +34,9 @@ private:
   void sub(const std::string& target, const std::string& source);
   void mul(const std::string& target, const std::string& source);
   void div(const std::string& target, const std::string& source);
+  void isInMemory(int num);
+  bool isNumeric(const std::string& num);
+
 public:
   CpuSimulator (const std::string& file);
   CpuSimulator (const CpuSimulator&& cpu) = delete;

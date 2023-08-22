@@ -1,9 +1,5 @@
 #include "Cpu.h"
-#include <iostream> 
-#include <array>
-#include <map>
-#include <fstream>
-#include<bits/stdc++.h>
+
 
 int main() {
   
