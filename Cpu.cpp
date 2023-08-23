@@ -5,6 +5,7 @@
 #include <fstream>
 #include <bits/stdc++.h>
 
+// private instructions
 CpuSimulator::CpuSimulator(const std::string& file) : m_filePath(file),  m_memory{0} {
   m_registers ["AYB"] = 0;
   m_registers ["BEN"] = 0;
@@ -20,17 +21,23 @@ Operations getOperation (const std::string& operation) {
   if(operation == "MOV") {
     return Operations::MOV;
   } else if(operation == "ADD") {
-    return Operations::ADD;
+      return Operations::ADD;
   } else if(operation == "SUB") {
-    return Operations::SUB;
+      return Operations::SUB;
   } else if(operation == "MUL") {
-    return Operations::MUL;
+      return Operations::MUL;
   } else if(operation == "DIV") {
-    return Operations::DIV;
+      return Operations::DIV;
   } else if(operation == "CMP") {
-    return Operations::CMP;
+      return Operations::CMP;
   } else if(operation == "JMP") {
-    return Operations::JMP;
+      return Operations::JMP;
+  } else if(operation == "JE") {
+      return Operations::JE;
+  } else if(operation == "JG") {
+      return Operations::JG;
+  } else if(operation == "JL") {
+      return Operations::JL;
   } else {
       throw std::invalid_argument("Unknown operation");
   }
@@ -57,6 +64,7 @@ void CpuSimulator::isInMemory(int num) {
 }
 
 void CpuSimulator::parser (const std::string& input) {
+
 if (input.empty() || input.find(":") != std::string::npos) {
     ++m_registers["GH"];
     return;
@@ -124,6 +132,24 @@ if (input.empty() || input.find(":") != std::string::npos) {
       std::string label;
       iss >> label;
       jmp(label);
+      break;
+    }
+     case Operations::JE: {
+      std::string label;
+      iss >> label;
+      je(label);
+      break;
+    }
+     case Operations::JG: {
+      std::string label;
+      iss >> label;
+      jg(label);
+      break;
+    }
+     case Operations::JL: {
+      std::string label;
+      iss >> label;
+      je(label);
       break;
     }
     default:
