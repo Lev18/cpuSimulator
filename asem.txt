@@ -1,7 +1,10 @@
 MOV [15] 24
-MOV AYB 12
-MOv ben 45
-mov GIM 4
-div [15] 2
-div ayb 2
-mov [17] ben
+jmp label
+mov ayb 45
+MOV [15] 24
+CMP ayb ben 
+CMP gim [17]
+mov da 17
+label:
+mov [16] 85
+add ech 75
