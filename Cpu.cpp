@@ -553,6 +553,23 @@ void CpuSimulator::jmp(const std::string& label) {
   }
 }
 
+void CpuSimulator::je(const std::string& label) {
+  if(flag.ZF) {
+    jmp(label);
+  }
+}
+
+void CpuSimulator::jg(const std::string& label) {
+  if(flag.CF) {
+    jmp(label);
+  }
+}
+
+void CpuSimulator::jl(const std::string& label) {
+  if(flag.SF) {
+    jmp(label);
+  }
+}
 
 void CpuSimulator::addLabels(const std::string& label) {
   std::string uppLab = label;
@@ -586,12 +603,10 @@ void CpuSimulator::dumpMemor() {
     std::cout << "[" << i << "]" << "_____" << m_memory[i] << std::endl;
   }
 
-  for(auto regs : m_registers) {
+  for(const auto& regs : m_registers) {
     std::cout << "Resgister " << regs.first << " value " << regs.second << std::endl;
   }
   std::cout << "[CF] flag " <<  flag.CF << std::endl;
   std::cout << "[ZF] flag " <<  flag.ZF << std::endl;
   std::cout << "[SF] flag " <<  flag.SF << std::endl;
 }
-
-

@@ -47,6 +47,10 @@ private:
   void div(const std::string& target, const std::string& source);
   void cmp(const std::string& target, const std::string& source);
   void jmp(const std::string& label);
+  void jg(const std::string& label);
+  void je(const std::string& label);
+  void jl(const std::string& label);
+
   void addLabels(const std::string& label); 
   void isInMemory(int num);
   bool isNumeric(const std::string& num);
